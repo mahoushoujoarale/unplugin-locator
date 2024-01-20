@@ -10,6 +10,7 @@ export const unpluginFactory: UnpluginFactory<Options | undefined> = (options) =
 
   return {
     name: 'unplugin-locator',
+    enforce: 'pre',
     buildStart() {
       startServer(mergedOptions)
     },
@@ -18,7 +19,7 @@ export const unpluginFactory: UnpluginFactory<Options | undefined> = (options) =
       return /\.(jsx?|tsx?|vue)$/.test(id)
     },
     transform(code: string, id: string) {
-      return transform(id, code, mergedOptions)
+      return transform(code, id)
     },
   }
 }

@@ -1,12 +1,11 @@
-import type { Options } from '../types'
 import transformJsx from './transformers/transformJsx'
 import transformVue from './transformers/transformVue'
 
-function transform(id: string, code: string, options: Options) {
-  // if (/\.(jsx?|tsx?)$/.test(id))
-  //   return transformJsx(code, options)
+function transform(code: string, id: string) {
+  if (/\.(jsx?|tsx?)$/.test(id))
+    return transformJsx(code, id)
   if (/\.vue$/.test(id))
-    return transformVue(code, options)
+    return transformVue(code, id)
   return code
 }
 

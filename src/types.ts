@@ -5,6 +5,5 @@ type Editor = 'appcode' | 'atom' | 'atom-beta' | 'brackets' | 'clion' | 'code' |
 export interface Options {
   hotKeys?: HotKey[]
   editor?: Editor
-  silent?: boolean
   serverPort?: number
 }

@@ -4,7 +4,6 @@ export const defaultPort = 9527
 
 export const defaultOptions: Options = {
   hotKeys: ['altKey', 'shiftKey'],
-  silent: false,
   serverPort: defaultPort,
 }
 
