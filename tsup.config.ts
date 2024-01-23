@@ -8,5 +8,7 @@ export default <Options>{
   clean: true,
   format: ['cjs', 'esm'],
   dts: true,
+  sourcemap: false,
+  minify: true,
   onSuccess: 'npm run build:fix',
 }
