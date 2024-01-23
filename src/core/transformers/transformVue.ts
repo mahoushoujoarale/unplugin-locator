@@ -12,9 +12,9 @@ function transformVue(code: string, id: string) {
           && node.tagType === ElementTypes.ELEMENT
         ) {
           const { line, column, offset } = node.loc.start
-          // inject data-v-loc after <tag
+          // inject data-v-file after <tag
           const insertPosition = offset + node.tag.length + 1
-          const appendStr = ` data-v-loc="${id}:${line}:${column}"`
+          const appendStr = ` data-v-file="${id}:${line}:${column}"`
 
           res.appendLeft(insertPosition, appendStr)
         }

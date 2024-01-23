@@ -26,6 +26,11 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
+    "./client": {
+      "types": "./dist/core/client.d.ts",
+      "import": "./dist/core/client.js",
+      "require": "./dist/core/client.cjs"
+    },
     "./astro": {
       "types": "./dist/astro.d.ts",
       "import": "./dist/astro.js",
@@ -127,6 +132,7 @@
   },
   "dependencies": {
     "@babel/core": "^7.12.16",
+    "@popperjs/core": "^2.11.8",
     "@vue/compiler-dom": "^3.4.14",
     "launch-editor": "^2.6.1",
     "magic-string": "^0.30.5",

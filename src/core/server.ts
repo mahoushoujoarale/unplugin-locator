@@ -2,8 +2,8 @@ import { createServer } from 'node:http'
 import { getPortPromise } from 'portfinder'
 import launchEditor from 'launch-editor'
 import chalk from 'chalk'
-import type { Options } from '../../types'
-import { defaultPort } from '../constant'
+import type { Options } from '../types'
+import { defaultPort } from './constant'
 
 export const serverInfo = {
   status: 0,
@@ -11,8 +11,6 @@ export const serverInfo = {
 }
 
 async function startServer(options: Options) {
-  if (serverInfo.status)
-    return
   const server = createServer((req, res) => {
     if (!req.url || !req.url?.startsWith('/launch-editor')) {
       res.writeHead(404)
@@ -34,12 +32,12 @@ async function startServer(options: Options) {
   try {
     const port = await getPortPromise({ port: options.serverPort })
     server.listen(port)
-    console.warn(chalk.yellow(`[unplugin-locator] Server listening on port ${port}`))
+    console.warn(chalk.cyan.bold('[unplugin-locator]') + chalk.yellow(` Server listening on port ${port}`))
     serverInfo.status = 1
     serverInfo.port = port
   }
   catch (err) {
-    console.warn(chalk.red(`[unplugin-locator] Server failed to start`))
+    console.warn(chalk.red.bold('[unplugin-locator]') + chalk(` Server failed to start`))
     serverInfo.status = 0
     throw err
   }

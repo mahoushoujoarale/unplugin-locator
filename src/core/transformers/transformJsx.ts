@@ -9,15 +9,14 @@ function transformJsx(code: string, id: string) {
   })
   if (!ast)
     return code
-  console.warn(code)
 
   traverse(ast, {
     enter({ node }) {
       if (node.type === 'JSXOpeningElement') {
         const { line, column } = node.loc!.start
-        // inject data-v-loc before /> or >
+        // inject data-v-file before /> or >
         const insertPosition = node.end! - (node.selfClosing ? 2 : 1)
-        const appendStr = ` data-v-loc="${id}:${line}:${column}"`
+        const appendStr = ` data-v-file="${id}:${line}:${column + 1}"`
 
         res.appendLeft(insertPosition, appendStr)
       }
