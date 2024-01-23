@@ -1,5 +1,6 @@
 import { env } from 'node:process'
-import { resolve } from 'node:path'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import type { UnpluginFactory } from 'unplugin'
 import { createUnplugin } from 'unplugin'
 import type { Options } from './types'
@@ -32,7 +33,7 @@ export const unpluginFactory: UnpluginFactory<Options | undefined> = (options) =
       // inject client script
       if (!isClientInited && /\.(jsx?|tsx?)$/.test(id)) {
         isClientInited = true
-        const clientUrl = resolve(__dirname, './core/client.js')
+        const clientUrl = resolve(__dirname ?? dirname(fileURLToPath(import.meta.url)), './core/client.js')
         code += `\nimport initClient from '${clientUrl}'\ninitClient({ port: ${serverInfo.port}, hotKeys: '${mergedOptions.hotKeys?.join(',')}' })`
       }
       return transform(code, id)
