@@ -4,5 +4,8 @@ import unpluginLocator from '../../dist/vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [unpluginLocator(), vue()],
+  plugins: [
+    unpluginLocator(),
+    vue(),
+  ],
 })

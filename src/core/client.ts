@@ -1,5 +1,13 @@
 import { createPopper, flip, preventOverflow } from '@popperjs/core'
 
+type HotKey = 'ctrlKey' | 'altKey' | 'metaKey' | 'shiftKey'
+interface Options {
+  port: number
+  hotKeys: string
+}
+
+let port = 9527
+let hotKeys: HotKey[] = ['altKey', 'shiftKey']
 let locatorElement: HTMLElement | null = null
 let popperElement: HTMLElement | null = null
 let currentFile = ''
@@ -96,13 +104,13 @@ function closeLocator() {
 function handleClick(e: MouseEvent) {
   e.preventDefault()
   e.stopPropagation()
-  fetch(`http://localhost:${9527}/launch-editor?file=${currentFile}`)
+  fetch(`http://localhost:${port}/launch-editor?file=${currentFile}`)
   closeLocator()
 }
 
 function attachListener() {
   window.addEventListener('keydown', (e) => {
-    if (e.shiftKey && e.altKey) {
+    if (hotKeys.every(key => e[key])) {
       e.preventDefault()
       e.stopPropagation()
       openLocator()
@@ -112,7 +120,7 @@ function attachListener() {
     }
   }, { capture: true })
   window.addEventListener('keyup', (e) => {
-    if ((!e.shiftKey || !e.altKey) && isRendered) {
+    if ((hotKeys.some(key => !e[key])) && isRendered) {
       e.preventDefault()
       e.stopPropagation()
       closeLocator()
@@ -120,9 +128,11 @@ function attachListener() {
   }, { capture: true })
 }
 
-export default function initClient() {
+export default function initClient(options: Options) {
   if (document.querySelector('unplugin-locator') !== null)
     return
+  port = options.port
+  hotKeys = options.hotKeys.split(',') as HotKey[]
   const component = createLocatorElement()
   document.body.appendChild(component)
 
