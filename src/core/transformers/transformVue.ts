@@ -9,7 +9,7 @@ function transformVue(code: string, id: string) {
       (node) => {
         if (
           node.type === NodeTypes.ELEMENT
-          && node.tagType === ElementTypes.ELEMENT
+          && [ElementTypes.ELEMENT, ElementTypes.COMPONENT].includes(node.tagType)
         ) {
           const { line, column, offset } = node.loc.start
           // inject data-v-file after <tag

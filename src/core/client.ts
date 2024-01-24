@@ -14,31 +14,19 @@ const globalStyle = document.createElement('style')
 globalStyle.innerHTML = '* { cursor: pointer !important; user-select: none !important; }'
 let currentFile = ''
 let isRendered = false
-let colorIndex = 0
-const colors = [
-  'rgba(255, 0, 0, 0.2)',
-  'rgba(255, 165, 0, 0.2)',
-  'rgba(255, 255, 0, 0.2)',
-  'rgba(0, 128, 0, 0.2)',
-  'rgba(0, 0, 255, 0.2)',
-  'rgba(75, 0, 130, 0.2)',
-  'rgba(128, 0, 128, 0.2)',
-]
-const filenameToColorMap = new Map<string, string>()
 
-function getColor(filename: string) {
-  if (filenameToColorMap.has(filename))
-    return filenameToColorMap.get(filename)!
-  const color = colors[colorIndex++ % colors.length]
-  filenameToColorMap.set(filename, color)
-  return color
+function getFileByNode(node: HTMLElement) {
+  if (node.getAttribute('data-v-file'))
+    return node.getAttribute('data-v-file') as string
+  if (node.parentElement)
+    return getFileByNode(node.parentElement)
 }
 
 function createLocatorElement() {
   const component = document.createElement('unplugin-locator')
 
   const sheet = new CSSStyleSheet()
-  sheet.replaceSync('.locator { position: absolute; border: 1px solid orange; background: rgba(100, 200, 240, 0.1); pointer-events: none; z-index: 99999; } .popper { position: absolute; color: #86909c; font-weight: 700; border-radius: 4px; pointer-events: none; background: white; box-shadow: 0 0 4px rgba(0, 0, 0, 0.2); padding: 10px; z-index: 99999; }')
+  sheet.replaceSync('.locator { position: absolute; border: 1px solid orange; background: rgba(100, 200, 240, 0.1); box-sizing: border-box; pointer-events: none; z-index: 99999; } .popper { position: absolute; color: #86909c; font-weight: 700; border-radius: 4px; pointer-events: none; background: white; box-shadow: 0 0 4px rgba(0, 0, 0, 0.2); padding: 10px; z-index: 99999; }')
   locatorElement = document.createElement('div')
   popperElement = document.createElement('div')
   locatorElement.classList.add('locator')
@@ -55,9 +43,15 @@ function createLocatorElement() {
 }
 
 function handleMouseOver(e: MouseEvent) {
-  if (!(e.target instanceof HTMLElement) || !e.target.getAttribute('data-v-file') || !locatorElement || !popperElement)
+  if (!(e.target instanceof HTMLElement) || !locatorElement || !popperElement) {
+    if (e.target instanceof SVGElement && e.target.parentElement instanceof HTMLElement)
+      e.target.parentElement?.dispatchEvent(new MouseEvent('mouseover', { bubbles: true, cancelable: true }))
     return
-  currentFile = e.target.getAttribute('data-v-file') as string
+  }
+  const file = getFileByNode(e.target)
+  if (!file)
+    return
+  currentFile = file
   e.preventDefault()
   e.stopPropagation()
 
@@ -66,7 +60,6 @@ function handleMouseOver(e: MouseEvent) {
   locatorElement.style.top = `${rect.top}px`
   locatorElement.style.width = `${e.target.offsetWidth}px`
   locatorElement.style.height = `${e.target.offsetHeight}px`
-  locatorElement.style.background = getColor(currentFile.split(':')[0])
   popperElement.textContent = currentFile
 
   createPopper(locatorElement, popperElement, {
@@ -89,8 +82,8 @@ function openLocator() {
   document.head.appendChild(globalStyle)
   locatorElement?.style.setProperty('display', null)
   popperElement?.style.setProperty('display', null)
-  document.addEventListener('mouseover', handleMouseOver, { capture: true })
-  document.addEventListener('click', handleClick, { capture: true })
+  document.addEventListener('mouseover', handleMouseOver)
+  document.addEventListener('click', handleClick)
   window.addEventListener('blur', closeLocator, { once: true })
 }
 
@@ -102,8 +95,8 @@ function closeLocator() {
   document.head.removeChild(globalStyle)
   locatorElement?.style.setProperty('display', 'none')
   popperElement?.style.setProperty('display', 'none')
-  document.removeEventListener('mouseover', handleMouseOver, { capture: true })
-  document.removeEventListener('click', handleClick, { capture: true })
+  document.removeEventListener('mouseover', handleMouseOver)
+  document.removeEventListener('click', handleClick)
 }
 
 function handleClick(e: MouseEvent) {
@@ -123,14 +116,14 @@ function attachListener() {
         e.target?.dispatchEvent(new MouseEvent('mouseover', { bubbles: true, cancelable: true }))
       }, { once: true })
     }
-  }, { capture: true })
+  })
   window.addEventListener('keyup', (e) => {
     if ((hotKeys.some(key => !e[key])) && isRendered) {
       e.preventDefault()
       e.stopPropagation()
       closeLocator()
     }
-  }, { capture: true })
+  })
 }
 
 export default function initClient(options: Options) {
