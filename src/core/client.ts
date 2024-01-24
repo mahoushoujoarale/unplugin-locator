@@ -10,6 +10,8 @@ let port = 9527
 let hotKeys: HotKey[] = ['altKey', 'shiftKey']
 let locatorElement: HTMLElement | null = null
 let popperElement: HTMLElement | null = null
+const globalStyle = document.createElement('style')
+globalStyle.innerHTML = '* { cursor: pointer !important; user-select: none !important; }'
 let currentFile = ''
 let isRendered = false
 let colorIndex = 0
@@ -36,15 +38,16 @@ function createLocatorElement() {
   const component = document.createElement('unplugin-locator')
 
   const sheet = new CSSStyleSheet()
-  sheet.replaceSync('.locator { position: absolute; background: rgba(100, 200, 240, 0.1); pointer-events: none; } .popper { position: absolute; color: #86909c; font-weight: 700; border-radius: 4px; pointer-events: none; background: white; box-shadow: 0 0 4px rgba(0, 0, 0, 0.2); padding: 10px;')
-  const shadow = component.attachShadow({ mode: 'open' })
-  shadow.adoptedStyleSheets = [sheet]
+  sheet.replaceSync('.locator { position: absolute; border: 1px solid orange; background: rgba(100, 200, 240, 0.1); pointer-events: none; z-index: 99999; } .popper { position: absolute; color: #86909c; font-weight: 700; border-radius: 4px; pointer-events: none; background: white; box-shadow: 0 0 4px rgba(0, 0, 0, 0.2); padding: 10px; z-index: 99999; }')
   locatorElement = document.createElement('div')
   popperElement = document.createElement('div')
   locatorElement.classList.add('locator')
   popperElement.classList.add('popper')
   locatorElement.style.setProperty('display', 'none')
   popperElement.style.setProperty('display', 'none')
+
+  const shadow = component.attachShadow({ mode: 'open' })
+  shadow.adoptedStyleSheets = [sheet]
   shadow.appendChild(locatorElement)
   shadow.appendChild(popperElement)
 
@@ -58,8 +61,9 @@ function handleMouseOver(e: MouseEvent) {
   e.preventDefault()
   e.stopPropagation()
 
-  locatorElement.style.left = `${e.target.offsetLeft}px`
-  locatorElement.style.top = `${e.target.offsetTop}px`
+  const rect = e.target.getBoundingClientRect()
+  locatorElement.style.left = `${rect.left}px`
+  locatorElement.style.top = `${rect.top}px`
   locatorElement.style.width = `${e.target.offsetWidth}px`
   locatorElement.style.height = `${e.target.offsetHeight}px`
   locatorElement.style.background = getColor(currentFile.split(':')[0])
@@ -82,19 +86,18 @@ function handleMouseOver(e: MouseEvent) {
 
 function openLocator() {
   isRendered = true
-  document.body.style.setProperty('cursor', 'pointer')
-  document.body.style.setProperty('user-select', 'none')
+  document.head.appendChild(globalStyle)
   locatorElement?.style.setProperty('display', null)
   popperElement?.style.setProperty('display', null)
   document.addEventListener('mouseover', handleMouseOver, { capture: true })
   document.addEventListener('click', handleClick, { capture: true })
+  window.addEventListener('blur', closeLocator, { once: true })
 }
 
 function closeLocator() {
   isRendered = false
   currentFile = ''
-  document.body.style.setProperty('cursor', null)
-  document.body.style.setProperty('user-select', null)
+  document.head.removeChild(globalStyle)
   locatorElement?.style.setProperty('display', 'none')
   popperElement?.style.setProperty('display', 'none')
   document.removeEventListener('mouseover', handleMouseOver, { capture: true })
