@@ -95,6 +95,8 @@ function openLocator() {
 }
 
 function closeLocator() {
+  if (!isRendered)
+    return
   isRendered = false
   currentFile = ''
   document.head.removeChild(globalStyle)

@@ -18,13 +18,13 @@ export const unpluginFactory: UnpluginFactory<Options | undefined> = (options) =
     name: 'unplugin-locator',
     enforce: 'pre',
     buildStart() {
-      if (isServerInited || env.NODE_ENV !== 'development')
+      if (isServerInited || env.NODE_ENV === 'production')
         return
       isServerInited = true
       startServer(mergedOptions)
     },
     transformInclude(id) {
-      if (env.NODE_ENV !== 'development')
+      if (env.NODE_ENV === 'production')
         return false
       // support react, preact, solid.js, vue
       return /\.(jsx?|tsx?|vue)$/.test(id)
