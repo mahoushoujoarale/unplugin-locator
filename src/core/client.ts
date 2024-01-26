@@ -1,4 +1,5 @@
 import { createPopper, flip, preventOverflow } from '@popperjs/core'
+import { locatorAttr } from './constant'
 
 type HotKey = 'ctrlKey' | 'altKey' | 'metaKey' | 'shiftKey'
 interface Options {
@@ -16,8 +17,8 @@ let currentFile = ''
 let isRendered = false
 
 function getFileByNode(node: HTMLElement) {
-  if (node.getAttribute('data-v-file'))
-    return node.getAttribute('data-v-file') as string
+  if (node.getAttribute(locatorAttr))
+    return node.getAttribute(locatorAttr) as string
   if (node.parentElement)
     return getFileByNode(node.parentElement)
 }

@@ -6,3 +6,5 @@ export const defaultOptions: Options = {
   hotKeys: ['altKey', 'shiftKey'],
   serverPort: defaultPort,
 }
+
+export const locatorAttr = 'data-locator-file'

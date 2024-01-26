@@ -26,6 +26,8 @@ export const unpluginFactory: UnpluginFactory<Options | undefined> = (options) =
     transformInclude(id) {
       if (env.NODE_ENV === 'production')
         return false
+      if (id.includes('node_modules'))
+        return false
       // support react, preact, solid.js, vue
       return /\.(jsx?|tsx?|vue)$/.test(id)
     },
@@ -33,11 +35,7 @@ export const unpluginFactory: UnpluginFactory<Options | undefined> = (options) =
       // inject client script
       if (!isClientInited && /\.(jsx?|tsx?)$/.test(id)) {
         isClientInited = true
-        let currentDirname
-        if (typeof __dirname === 'undefined')
-          currentDirname = dirname(fileURLToPath(import.meta.url))
-        else
-          currentDirname = __dirname
+        const currentDirname = __dirname ?? dirname(fileURLToPath(import.meta.url))
         const clientUrl = resolve(currentDirname, './core/client.js')
         code += `\nimport initClient from '${clientUrl}'\ninitClient({ port: ${serverInfo.port}, hotKeys: '${mergedOptions.hotKeys?.join(',')}' })`
       }

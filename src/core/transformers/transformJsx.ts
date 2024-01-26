@@ -1,10 +1,12 @@
 import { parse, traverse } from '@babel/core'
 import MagicString from 'magic-string'
+import { locatorAttr } from '../constant'
 
 function transformJsx(code: string, id: string) {
   const res = new MagicString(code)
   const ast = parse(code, {
     sourceType: 'module',
+    configFile: false,
     plugins: [['@babel/plugin-transform-typescript', { isTSX: true }]],
   })
   if (!ast)
@@ -14,9 +16,9 @@ function transformJsx(code: string, id: string) {
     enter({ node }) {
       if (node.type === 'JSXOpeningElement') {
         const { line, column } = node.loc!.start
-        // inject data-v-file before /> or >
+        // inject locatorAttr before /> or >
         const insertPosition = node.end! - (node.selfClosing ? 2 : 1)
-        const appendStr = ` data-v-file="${id}:${line}:${column + 1}"`
+        const appendStr = ` ${locatorAttr}="${id}:${line}:${column + 1}"`
 
         res.appendLeft(insertPosition, appendStr)
       }
