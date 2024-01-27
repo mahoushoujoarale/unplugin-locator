@@ -6,6 +6,7 @@ import { locatorAttr } from '../constant'
 function transformVue(code: string, id: string) {
   const res = new MagicString(code)
   const ast = parse(code)
+
   transform(ast, {
     nodeTransforms: [
       (node) => {
@@ -24,6 +25,7 @@ function transformVue(code: string, id: string) {
       },
     ],
   })
+
   return res.toString()
 }
 
