@@ -1,8 +1,8 @@
-import type { Options } from './types'
+import type { UserOptions } from './types'
 
 import unplugin from '.'
 
-export default (options: Options) => ({
+export default (options: UserOptions) => ({
   name: 'unplugin-starter',
   hooks: {
     'astro:config:setup': async (astro: any) => {

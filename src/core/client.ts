@@ -84,7 +84,7 @@ function openLocator() {
   locatorElement?.style.setProperty('display', null)
   popperElement?.style.setProperty('display', null)
   document.addEventListener('mouseover', handleMouseOver)
-  document.addEventListener('click', handleClick)
+  document.addEventListener('click', handleClick, { capture: true })
   window.addEventListener('blur', closeLocator, { once: true })
 }
 
@@ -97,7 +97,7 @@ function closeLocator() {
   locatorElement?.style.setProperty('display', 'none')
   popperElement?.style.setProperty('display', 'none')
   document.removeEventListener('mouseover', handleMouseOver)
-  document.removeEventListener('click', handleClick)
+  document.removeEventListener('click', handleClick, { capture: true })
 }
 
 function handleClick(e: MouseEvent) {

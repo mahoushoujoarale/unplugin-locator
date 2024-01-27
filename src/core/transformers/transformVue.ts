@@ -1,3 +1,4 @@
+import { relative } from 'node:path'
 import { ElementTypes, NodeTypes, parse, transform } from '@vue/compiler-dom'
 import MagicString from 'magic-string'
 import { locatorAttr } from '../constant'
@@ -10,12 +11,13 @@ function transformVue(code: string, id: string) {
       (node) => {
         if (
           node.type === NodeTypes.ELEMENT
-          && [ElementTypes.ELEMENT].includes(node.tagType)
+          && [ElementTypes.ELEMENT, ElementTypes.COMPONENT].includes(node.tagType)
         ) {
           const { line, column, offset } = node.loc.start
           // inject locatorAttr after <tag
           const insertPosition = offset + node.tag.length + 1
-          const appendStr = ` ${locatorAttr}="${id}:${line}:${column}"`
+          const file = relative('.', id)
+          const appendStr = ` ${locatorAttr}="${file}:${line}:${column}"`
 
           res.appendLeft(insertPosition, appendStr)
         }

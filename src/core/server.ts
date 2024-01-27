@@ -1,4 +1,5 @@
 import { createServer } from 'node:http'
+import { resolve } from 'node:path'
 import { getPortPromise } from 'portfinder'
 import launchEditor from 'launch-editor'
 import chalk from 'chalk'
@@ -26,7 +27,7 @@ async function startServer(options: Options) {
       'Access-Control-Allow-Private-Network': 'true',
     })
     res.end('success')
-    launchEditor(file, options.editor)
+    launchEditor(resolve('.', file), options.editor)
   })
 
   try {

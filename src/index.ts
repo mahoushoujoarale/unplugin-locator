@@ -3,7 +3,7 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { UnpluginFactory } from 'unplugin'
 import { createUnplugin } from 'unplugin'
-import type { Options } from './types'
+import type { Options, UserOptions } from './types'
 import transform from './core/transform'
 import { defaultOptions } from './core/constant'
 import startServer, { serverInfo } from './core/server'
@@ -11,8 +11,8 @@ import startServer, { serverInfo } from './core/server'
 let isServerInited = false
 let isClientInited = false
 
-export const unpluginFactory: UnpluginFactory<Options | undefined> = (options) => {
-  const mergedOptions = { ...defaultOptions, ...options }
+export const unpluginFactory: UnpluginFactory<UserOptions | undefined> = (options) => {
+  const mergedOptions: Options = { ...defaultOptions, ...options }
 
   return {
     name: 'unplugin-locator',
