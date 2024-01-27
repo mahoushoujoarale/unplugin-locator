@@ -15,12 +15,12 @@ function transformJsx(code: string, id: string) {
 
   traverse(ast, {
     enter({ node }) {
-      if (node.type === 'JSXOpeningElement') {
+      if (node.type === 'JSXOpeningElement' && node.name.type === 'JSXIdentifier') {
         const { line, column } = node.loc!.start
         // inject locatorAttr before /> or >
         const insertPosition = node.end! - (node.selfClosing ? 2 : 1)
         const file = relative('.', id)
-        const appendStr = ` ${locatorAttr}="${file}:${line}:${column + 1}"`
+        const appendStr = ` ${locatorAttr}="${file}:${line}:${column + 1}?${node.name.name}"`
 
         res.appendLeft(insertPosition, appendStr)
       }

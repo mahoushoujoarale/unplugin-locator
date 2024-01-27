@@ -52,7 +52,8 @@ function handleMouseOver(e: MouseEvent) {
   const file = getFileByNode(e.target)
   if (!file)
     return
-  currentFile = file
+  currentFile = file.split('?')[0]
+  const tag = file.split('?')[1]
   e.preventDefault()
   e.stopPropagation()
 
@@ -61,7 +62,10 @@ function handleMouseOver(e: MouseEvent) {
   locatorElement.style.top = `${rect.top}px`
   locatorElement.style.width = `${e.target.offsetWidth}px`
   locatorElement.style.height = `${e.target.offsetHeight}px`
-  popperElement.textContent = currentFile
+  popperElement.innerHTML = `<span style="color: #646cff; font-size: 18px;">${tag}</span>`
+  + `<span style="color: #6f6f6f; margin-left: 8px;">click to open editor</span>`
+  + `<br>`
+  + `<span>${currentFile}</span>`
 
   createPopper(locatorElement, popperElement, {
     placement: 'bottom',
