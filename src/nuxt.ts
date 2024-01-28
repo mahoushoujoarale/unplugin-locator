@@ -10,8 +10,8 @@ export interface ModuleOptions extends UserOptions {
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
-    name: 'nuxt-unplugin-starter',
-    configKey: 'unpluginStarter',
+    name: 'nuxt-unplugin-locator',
+    configKey: 'unpluginLocator',
   },
   defaults: {
     // ...default options

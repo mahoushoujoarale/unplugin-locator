@@ -3,7 +3,7 @@ import type { UserOptions } from './types'
 import unplugin from '.'
 
 export default (options: UserOptions) => ({
-  name: 'unplugin-starter',
+  name: 'unplugin-locator',
   hooks: {
     'astro:config:setup': async (astro: any) => {
       astro.config.vite.plugins ||= []

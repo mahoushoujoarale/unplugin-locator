@@ -17,7 +17,7 @@ function transformVue(code: string, id: string) {
           const { line, column, offset } = node.loc.start
           // inject locatorAttr after <tag
           const insertPosition = offset + node.tag.length + 1
-          const file = relative('.', id)
+          const file = relative('.', id.split('?')[0])
           const appendStr = ` ${locatorAttr}="${file}:${line}:${column}?${node.tag}"`
 
           res.appendLeft(insertPosition, appendStr)

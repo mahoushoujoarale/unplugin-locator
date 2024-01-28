@@ -29,7 +29,7 @@ export const unpluginFactory: UnpluginFactory<UserOptions | undefined> = (option
       if (id.includes('node_modules'))
         return false
       // support react, preact, solid.js, vue
-      return /\.(jsx?|tsx?|vue)$/.test(id)
+      return /\.(([jt]sx?|vue)$)|(vue\?vue)/.test(id)
     },
     transform(code: string, id: string) {
       // inject client script
