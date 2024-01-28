@@ -35,7 +35,11 @@ export const unpluginFactory: UnpluginFactory<UserOptions | undefined> = (option
       // inject client script
       if (!isClientInited && /\.(jsx?|tsx?)$/.test(id)) {
         isClientInited = true
-        const currentDirname = __dirname ?? dirname(fileURLToPath(import.meta.url))
+        let currentDirname = ''
+        if (typeof __dirname === 'undefined')
+          currentDirname = dirname(fileURLToPath(import.meta.url))
+        else
+          currentDirname = __dirname
         const clientUrl = resolve(currentDirname, './core/client.js')
         code += `\nimport initClient from '${clientUrl}'\ninitClient({ port: ${serverInfo.port}, hotKeys: '${mergedOptions.hotKeys?.join(',')}' })`
       }
