@@ -12,7 +12,7 @@ let hotKeys: HotKey[] = ['altKey', 'shiftKey']
 let locatorElement: HTMLElement | null = null
 let popperElement: HTMLElement | null = null
 const globalStyle = document.createElement('style')
-globalStyle.innerHTML = '* { cursor: pointer !important; user-select: none !important; }'
+globalStyle.innerHTML = '* { cursor: pointer !important; user-select: none !important; pointer-events: auto !important; }'
 let currentFile = ''
 let isRendered = false
 
@@ -57,9 +57,12 @@ function handleMouseOver(e: MouseEvent) {
   e.preventDefault()
   e.stopPropagation()
 
+  const animations = e.target.getAnimations()
+  animations.forEach(animation => animation.cancel())
   const rect = e.target.getBoundingClientRect()
-  locatorElement.style.left = `${rect.left}px`
-  locatorElement.style.top = `${rect.top}px`
+  animations.forEach(animation => animation.play())
+  locatorElement.style.left = `${rect.left + window.scrollX}px`
+  locatorElement.style.top = `${rect.top + window.scrollY}px`
   locatorElement.style.width = `${e.target.offsetWidth}px`
   locatorElement.style.height = `${e.target.offsetHeight}px`
   popperElement.innerHTML = `<span style="color: #646cff; font-size: 18px;">${tag}</span>`
